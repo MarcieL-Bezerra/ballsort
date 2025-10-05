@@ -1,13 +1,51 @@
 const gameContainer = document.querySelector('.game-container');
 
-// Função para gerar cores diferentes dinamicamente
+// Som de moeda grátis
+const audioMoeda = new Audio();
+audioMoeda.src = "moeda.mp3";
+
+// Função para gerar cores diferentes dinamicamente, incluindo preto
 function gerarCores(qtd) {
   const cores = [];
-  for (let i = 0; i < qtd; i++) {
-    const h = Math.round((360 / qtd) * i);
+  // Sempre inclui preto como uma das cores se houver espaço
+  if (qtd > 0) cores.push('#111'); // Preto
+  for (let i = 1; i < qtd; i++) {
+    const h = Math.round((360 / (qtd - 1)) * (i - 1));
     cores.push(`hsl(${h}, 100%, 50%)`);
   }
   return cores;
+}
+
+// Função para gerar bordas únicas para cada cor
+function gerarBordas(qtd, coresBase) {
+  // Lista de cores de borda que não se repetem e não são iguais à cor da bola
+  const bordasPossiveis = [
+    '#1976d2', // Azul
+    '#d32f2f', // Vermelho
+    '#388e3c', // Verde
+    '#fbc02d', // Amarelo
+    '#7b1fa2', // Roxo
+    '#f57c00', // Laranja
+    '#c2185b', // Rosa
+    '#0097a7', // Ciano
+    '#5d4037', // Marrom
+    '#fff',    // Branco
+    '#000',    // Preto
+  ];
+  const bordas = [];
+  let idx = 0;
+  for (let i = 0; i < qtd; i++) {
+    // Garante que a borda não seja igual à cor da bola
+    while (
+      idx < bordasPossiveis.length &&
+      (bordasPossiveis[idx].toLowerCase() === coresBase[i].toLowerCase())
+    ) {
+      idx++;
+    }
+    bordas.push(bordasPossiveis[idx % bordasPossiveis.length]);
+    idx++;
+  }
+  return bordas;
 }
 
 // Parâmetros do jogo
@@ -15,9 +53,9 @@ const BOLAS_POR_TUBO = 8; // Começa com 8, mas pode aumentar
 const TURBOS_MAX = 10;    // Limite máximo de tubos
 
 let totalTubos = 4; // Começa com 4 tubos (3 cheios + 1 vazio)
-let totalCores = 3; // Começa com 3 cores
 let bolasPorTubo = BOLAS_POR_TUBO;
-let cores = gerarCores(totalCores);
+let cores = gerarCores(totalTubos - 1);
+let bordas = gerarBordas(totalTubos - 1, cores);
 
 let bolas = [];
 let selectedTubo = null;
@@ -57,8 +95,9 @@ function atualizarPlacar() {
 
 function criarBolas() {
   bolas = [];
-  // Gera cores suficientes para os tubos cheios
+  // Gera cores e bordas suficientes para os tubos cheios
   cores = gerarCores(totalTubos - 1);
+  bordas = gerarBordas(totalTubos - 1, cores);
   // Cria bolas para cada cor
   for (let i = 0; i < cores.length; i++) {
     for (let j = 0; j < bolasPorTubo; j++) {
@@ -66,6 +105,7 @@ function criarBolas() {
       bola.classList.add('bola');
       bola.style.background = cores[i];
       bola.dataset.cor = cores[i];
+      bola.style.border = `3px solid ${bordas[i]}`;
       bolas.push(bola);
     }
   }
@@ -187,6 +227,9 @@ function checarVitoria() {
 
   if (completos === totalTubos - 1) {
     setTimeout(() => {
+      // TOCA O SOM DE MOEDA
+      audioMoeda.currentTime = 0;
+      audioMoeda.play();
       pontuacao++;
       atualizarPlacar();
       alert('Parabéns! Você completou o desafio!');
