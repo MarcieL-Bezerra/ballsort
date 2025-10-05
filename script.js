@@ -160,11 +160,18 @@ function checarVitoria() {
       pontuacao++;
       atualizarPlacar();
       alert('Parabéns! Você completou o desafio!');
-      resetGame();
+      // Reinicia mantendo a pontuação
+      criarBolas();
+      distribuirBolas();
+      selectedTubo = null;
+      desmarcarTubosCompletos();
+      estadosAnteriores = [];
+      repeticoes = 0;
     }, 400);
   } else if (!haMovimentosPossiveis() || repeticoes >= 2) {
     setTimeout(() => {
       alert('Game Over! Não há mais movimentos possíveis ou você repetiu os mesmos movimentos.');
+      pontuacao = 0;
       resetGame();
     }, 400);
   }
