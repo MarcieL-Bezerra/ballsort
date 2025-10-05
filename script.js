@@ -105,11 +105,8 @@ function podeMover(origem, destino) {
   if (origem === destino) return false;
   if (origem.children.length === 0) return false;
   if (destino.children.length >= BOLAS_POR_TUBO) return false;
-  if (destino.children.length === 0) return true;
-  // Só pode empilhar bola da mesma cor
-  const bolaOrigem = origem.querySelector('.bola:last-child');
-  const bolaDestino = destino.querySelector('.bola:last-child');
-  return bolaOrigem.dataset.cor === bolaDestino.dataset.cor;
+  // Agora permite mover para qualquer tubo, mesmo de cor diferente
+  return true;
 }
 
 // Armazena os estados anteriores para detectar repetição de movimentos
