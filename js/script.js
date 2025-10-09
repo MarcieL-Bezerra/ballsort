@@ -2,7 +2,7 @@ const gameContainer = document.querySelector('.game-container');
 
 // Som de moeda grátis
 const audioMoeda = new Audio();
-audioMoeda.src = "moeda.mp3";
+audioMoeda.src = "media/moeda.mp3";
 
 // Função para gerar cores diferentes dinamicamente, incluindo preto
 function gerarCores(qtd) {
