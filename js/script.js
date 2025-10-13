@@ -218,7 +218,7 @@ function estourarFogos() {
   document.body.appendChild(fogosContainer);
 
   const coresFogos = [
-    '#ffeb3b', '#ff5722', '#4caf50', '#2196f3', '#e91e63', '#fff', '#111', '#fbc02d'
+    '#FFA500', '#ff5722', '#4caf50', '#2196f3', '#e91e63', '#fff', '#111', '#fbc02d'
   ];
 
   let interval = setInterval(() => {
