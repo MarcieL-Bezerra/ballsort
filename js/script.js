@@ -205,6 +205,54 @@ function proximaFase() {
   adicionarListeners();
 }
 
+// Função para criar fogos de artifício (bolinhas estourando)
+function estourarFogos() {
+  const fogosContainer = document.createElement('div');
+  fogosContainer.style.position = 'fixed';
+  fogosContainer.style.left = 0;
+  fogosContainer.style.top = 0;
+  fogosContainer.style.width = '100vw';
+  fogosContainer.style.height = '100vh';
+  fogosContainer.style.pointerEvents = 'none';
+  fogosContainer.style.zIndex = 9999;
+  document.body.appendChild(fogosContainer);
+
+  const coresFogos = [
+    '#ffeb3b', '#ff5722', '#4caf50', '#2196f3', '#e91e63', '#fff', '#111', '#fbc02d'
+  ];
+
+  let interval = setInterval(() => {
+    for (let i = 0; i < 12; i++) {
+      const fogo = document.createElement('div');
+      fogo.style.position = 'absolute';
+      fogo.style.width = '22px';
+      fogo.style.height = '22px';
+      fogo.style.borderRadius = '50%';
+      fogo.style.background = coresFogos[Math.floor(Math.random() * coresFogos.length)];
+      fogo.style.left = Math.random() * 90 + 5 + 'vw';
+      fogo.style.top = Math.random() * 60 + 10 + 'vh';
+      fogo.style.opacity = '0.85';
+      fogo.style.boxShadow = '0 0 16px #0006';
+      fogo.style.transition = 'transform 0.7s, opacity 0.7s';
+      fogosContainer.appendChild(fogo);
+
+      setTimeout(() => {
+        fogo.style.transform = `scale(${Math.random() * 2 + 1})`;
+        fogo.style.opacity = '0';
+      }, 100);
+
+      setTimeout(() => {
+        fogo.remove();
+      }, 700);
+    }
+  }, 400);
+
+  setTimeout(() => {
+    clearInterval(interval);
+    fogosContainer.remove();
+  }, 4000);
+}
+
 // Modifique a função checarVitoria para incluir o game over por repetição de estado
 function checarVitoria() {
   let completos = 0;
@@ -227,13 +275,14 @@ function checarVitoria() {
 
   if (completos === totalTubos - 1) {
     setTimeout(() => {
-      // TOCA O SOM DE MOEDA
       audioMoeda.currentTime = 0;
       audioMoeda.play();
       pontuacao++;
       atualizarPlacar();
-      alert('Parabéns! Você completou o desafio!');
-      proximaFase();
+      estourarFogos(); // Chama fogos
+      setTimeout(() => {
+        proximaFase();
+      }, 4000); // Espera 4 segundos antes de iniciar próxima fase
     }, 400);
   } else if (!haMovimentosPossiveis() || repeticoes >= 2) {
     setTimeout(() => {
